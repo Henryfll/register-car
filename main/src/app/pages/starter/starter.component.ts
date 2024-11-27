@@ -5,6 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioButton, MatRadioGroup, MatRadioModule } from '@angular/material/radio';
 import { MatStepperModule } from '@angular/material/stepper';
@@ -22,7 +23,8 @@ import { CameraCaptureComponent } from 'src/app/components/camera-capture/camera
     MatInputModule,
     MatRadioModule,
     MatCardModule,
-    CommonModule
+    CommonModule,
+    MatIcon
   ],
   templateUrl: './starter.component.html',
   encapsulation: ViewEncapsulation.None,
@@ -33,7 +35,8 @@ export class StarterComponent {
 
   //Por favor envía tu ubicación.
   primerFormGroup = this._formBuilder.group({
-    ubicacion: ['', Validators.required],
+    latitude: [''],
+    longitude: [''],
   });
   //¿La matrícula está a nombre del tomador del seguro?
   segundoFormGroup = this._formBuilder.group({
@@ -112,7 +115,7 @@ diezochoFormGroup = this._formBuilder.group({
 
 //Muchas gracias, ahora ingrese una foto del daño del vehículo.
 diezNueveFormGroup = this._formBuilder.group({
-  tieneDaniosVehiculo: ['', Validators.required],
+  danioVehiculo: ['', Validators.required],
 });
 //Por favor, agregue la descripción del problema.
 veinteFormGroup = this._formBuilder.group({
@@ -131,14 +134,21 @@ chasisPhoto: string | null = null;
 frontalVehiculoPhoto: string | null = null;
 posteriorVehiculoPhoto:string | null = null;
 izquierdaVehiculoPhoto:string | null = null;
+tableroVehiculoPhoto:string | null = null;
+panelVehiculoPhoto:string | null = null;
+tacometroVehiculoPhoto:string | null = null;
+cedulaPhoto:string | null = null;
+licenciaPhoto:string | null = null;
+danioVehiculoPhoto:string | null = null;
 
-
-constructor(private dialog: MatDialog) {}
+constructor(private dialog: MatDialog) {
+  //this.requestLocationAccess();
+}
 
 openCameraDialog(preguntaNumber:number): void {
   const dialogRef = this.dialog.open(CameraCaptureComponent, {
     width: '80%',
-    height: '80%'
+    height: '50%'
   });
 
   dialogRef.afterClosed().subscribe((result: string | undefined) => {
@@ -168,10 +178,69 @@ openCameraDialog(preguntaNumber:number): void {
           this.izquierdaVehiculoPhoto = result;
           this.octavoFormGroup.get('izquierdaVehiculo')?.setValue(result);
           break;
+        case 9:
+          this.tableroVehiculoPhoto = result;
+          this.novenoFormGroup.get('tableroVehiculo')?.setValue(result);
+          break;
+        case 10:
+          this.panelVehiculoPhoto = result;
+          this.decimoFormGroup.get('panelVehiculo')?.setValue(result);
+          break;
+        case 11:
+          this.tacometroVehiculoPhoto = result;
+          this.onceFormGroup.get('tacometroVehiculo')?.setValue(result);
+          break;
+        case 12:
+          this.cedulaPhoto = result;
+          this.doceFormGroup.get('cedula')?.setValue(result);
+          break;
+        case 13:
+          this.licenciaPhoto = result;
+          this.treceFormGroup.get('licencia')?.setValue(result);
+          break;
+        case 19:
+          this.danioVehiculoPhoto = result;
+          this.diezNueveFormGroup.get('danioVehiculo')?.setValue(result);
+          break;
       }
       //console.log('Foto capturada:', this.matriculaFrontalPhoto);
     }
   });
 }
 
+requestLocationAccess(): void {
+  const userConfirmed = confirm('Necesitamos tu ubicación para brindarte un mejor servicio.');
+  if (userConfirmed) {
+    this.checkPermission();
+  }
+}
+
+checkPermission(): void {
+  navigator.permissions.query({ name: 'geolocation' }).then((result) => {
+    if (result.state === 'granted') {
+      console.log('Permiso concedido previamente');
+      this.getLocation();
+    } else if (result.state === 'prompt') {
+      console.log('Se requiere permiso. Mostrando cuadro de diálogo del navegador.');
+      this.getLocation();
+    } else if (result.state === 'denied') {
+      console.error('Permiso denegado. Por favor, habilítalo en la configuración del navegador.');
+    }
+  });
+}
+
+getLocation(): void {
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      //console.log(`Latitud: ${position.coords.latitude}, Longitud: ${position.coords.longitude}`);
+      this.primerFormGroup.patchValue({
+        latitude: position.coords.latitude.toString(),
+        longitude: position.coords.longitude.toString()
+      });
+    },
+    (error) => {
+      console.error('Error obteniendo ubicación:', error);
+    }
+  );
+}
 }
