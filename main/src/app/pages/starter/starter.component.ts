@@ -10,6 +10,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatRadioButton, MatRadioGroup, MatRadioModule } from '@angular/material/radio';
 import { MatStepperModule } from '@angular/material/stepper';
 import { CameraCaptureComponent } from 'src/app/components/camera-capture/camera-capture.component';
+import { Accesorio } from './interfaces/accesorio';
+import { MatTableModule } from '@angular/material/table';
 
 @Component({
   selector: 'app-starter',
@@ -24,9 +26,11 @@ import { CameraCaptureComponent } from 'src/app/components/camera-capture/camera
     MatRadioModule,
     MatCardModule,
     CommonModule,
-    MatIcon
+    MatIcon,
+    MatTableModule
   ],
   templateUrl: './starter.component.html',
+  styleUrl:'./started.scss',
   encapsulation: ViewEncapsulation.None,
 })
 export class StarterComponent {
@@ -95,18 +99,13 @@ treceFormGroup = this._formBuilder.group({
 catorceFormGroup = this._formBuilder.group({
   tieneAccesorio: ['', Validators.required],
 });
-//Por favor, toma una foto del nuevo accesorio que deseas declarar.
-quinceFormGroup = this._formBuilder.group({
-  nuevoAccesorio: ['', Validators.required],
+//nuevo accesorio
+nuevoAccesorioFormGroup = this._formBuilder.group({
+  fotoAccesorio: ['', Validators.required], //Por favor, toma una foto del nuevo accesorio que deseas declarar.
+  valorAccesorio: ['', Validators.required],//Ingrese el valor del accesorio del vehículo
+  descripcionAccesorio: ['', Validators.required]//Por favor, agregue la descripción del accesorio.
 });
-//Ingrese el valor del accesorio del vehículo
-diezseisFormGroup = this._formBuilder.group({
-  valorAccesorio: ['', Validators.required],
-});
-//Por favor, agregue la descripción del accesorio.
-diezsieteFormGroup = this._formBuilder.group({
-  valorAccesorio: ['', Validators.required],
-});
+
 
 //¿Tu vehículo tiene algún golpe, rayón, raspadura, abolladura, vidrios rotos o trizados, desgaste en pintura o cualquier tipo de daño?
 diezochoFormGroup = this._formBuilder.group({
@@ -140,6 +139,10 @@ tacometroVehiculoPhoto:string | null = null;
 cedulaPhoto:string | null = null;
 licenciaPhoto:string | null = null;
 danioVehiculoPhoto:string | null = null;
+nuevoAccesorioPhoto:string | null = null;
+
+listaAccesorios:Accesorio[]=[];
+columnsAccesorios: string[] = ['foto', 'valor', 'descripcion'];
 
 constructor(private dialog: MatDialog) {
   //this.requestLocationAccess();
@@ -198,6 +201,10 @@ openCameraDialog(preguntaNumber:number): void {
           this.licenciaPhoto = result;
           this.treceFormGroup.get('licencia')?.setValue(result);
           break;
+        case 14:
+          this.nuevoAccesorioPhoto = result;
+          this.nuevoAccesorioFormGroup.get('fotoAccesorio')?.setValue(result);
+          break;
         case 19:
           this.danioVehiculoPhoto = result;
           this.diezNueveFormGroup.get('danioVehiculo')?.setValue(result);
@@ -243,4 +250,12 @@ getLocation(): void {
     }
   );
 }
+
+
+get ReactiveFrmCatorceFormGroup() {
+  return this.catorceFormGroup.controls;
+ }
+ get ReactiveFrmNuevoAccesorio() {
+  return this.nuevoAccesorioFormGroup.controls;
+ }
 }
