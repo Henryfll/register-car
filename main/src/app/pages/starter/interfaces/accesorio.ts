@@ -1,5 +1,5 @@
 export interface Accesorio {
-  foto:string | null;
+  foto:string;
   valor:number;
   descripcion:string;
 }

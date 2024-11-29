@@ -251,6 +251,23 @@ getLocation(): void {
   );
 }
 
+agregarAccesorio(){
+  let nuevoAccesorio:Accesorio={
+    foto:this.nuevoAccesorioFormGroup.get('fotoAccesorio')?.value ?? '',
+    descripcion:this.nuevoAccesorioFormGroup.get('descripcionAccesorio')?.value ?? '',
+    valor: Number(this.nuevoAccesorioFormGroup.get('valorAccesorio')?.value)
+  };
+
+  this.listaAccesorios.push(nuevoAccesorio);
+
+  this.nuevoAccesorioFormGroup = this._formBuilder.group({
+    fotoAccesorio: ['', Validators.required], //Por favor, toma una foto del nuevo accesorio que deseas declarar.
+    valorAccesorio: ['', Validators.required],//Ingrese el valor del accesorio del vehículo
+    descripcionAccesorio: ['', Validators.required]//Por favor, agregue la descripción del accesorio.
+  });
+
+  this.nuevoAccesorioPhoto=null;
+}
 
 get ReactiveFrmCatorceFormGroup() {
   return this.catorceFormGroup.controls;
